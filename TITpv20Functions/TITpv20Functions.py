@@ -1,18 +1,19 @@
-palk=[1200,2500,750,395,1200]
-inimesed=["A","B","C","D","E"]
 def palgad(p,i):
-    print(palk)
-    print(inimesed)
-    print("Keskmine - k, Minimum - min, Maksimum -max, Otsing -nimi, Sorteerimine -sort")
+    print(p)
+    print(i)
+    print("Keskmine - k,\nMinimum - min,\nMaksimum -max,\nOtsing -nimi,\nSorteerimine -sort")
     print("Delete - del")
     print("Top - top_max")
+    print("Rem Avrg - rem_avrg")
+    print("sort palgad - sort_abc")
     valik=input("Valik-...")
     if valik=="k":
         kesk_palk=round(keskmine(palk),2)
         print("Keskmine palk on ",kesk_palk)
     elif valik=="min":
-        min_palk,kellel=minimum(palk,inimesed)
-        print("Minimaalne palk ", min_palk, " saab kätte ",kellel)
+        m_palgad,nimed=minimum(palk,inimesed)
+        for n in nimed:
+            print(m_palgad[0], " saab kätte ",n)   # возрвращается вывод через экран
     elif valik=="max":
         max_palk,kellel=maksimum(palk,inimesed)
         print("Maksimaalne palk ", max_palk, " saab kätte ",kellel)
@@ -28,7 +29,7 @@ def palgad(p,i):
         p,i=delete(palk,inimesed)
         print(palk,inimesed)
         if len(inimesed)==0:
-            print("Tüli list")
+            print("Tühi list")
         else:
             for i in range(len(inimesed)):
                 print(inimesed[i]," saab kätte   ", palk[i])
@@ -37,7 +38,15 @@ def palgad(p,i):
         print(palk,inimesed)
 
     elif valik=="top_max":
-        p, i=topbogat(palk,inimesed)
+        p, i=topbogat(palk,inimesed)      # определения, функции, отвечают за каждое свое действие
+    elif valik=="rem_avrg":
+        Kustutamine()
+    elif valik=="sort_abc":
+        print("Sorting...")
+        a,b = sort_nimi_jargi()
+        print(a,list(b[0]))
+        inimesed = a.copy()
+        palk = list(b[0]).copy()
         
 
 def topbogat(palk,inimesed):
@@ -48,19 +57,18 @@ def topbogat(palk,inimesed):
     for i in range(0,k,1):
         print(palk[i])
         print(inimesed[i])
-    return palk, inimesed
+    return palk, inimesed   
 
-    
-
-def adding(palk,inimesed): # Добавить еще несколько человек и зарплат(кол-во говорит пользователь),
+def adding(palk,inimesed):
     add=input("Кого добавить??? ")
     inimesed.append(add)
     add_zp=int(input("Какая зарплата???"))
     palk.append(add_zp)
-    return palk,inimesed
+    return palk,inimesed          # добавление еще несколько человек и зарплат, которые говорит пользователь
 
-def delete(palk, inimesed): # Удалить человека и его зарплату,
-    x=input("name or number")
+def delete(palk, inimesed):
+    if x == "":
+        x=input("name or number")
     if x=="number":
         i=int(input("Chose number"))
         palk.pop(i-1)
@@ -78,10 +86,9 @@ def delete(palk, inimesed): # Удалить человека и его зарп
                 i+=1
             
     
-    return palk, inimesed
-            
+    return palk, inimesed       # удалить человека и его зарплату
         
-def sorteerimine(palk,inimesed): # Упорядочить зарплаты в порядке возрастания и убывания вместе с именами,
+def sorteerimine(palk,inimesed):
     abi_p=0
     abi_i=""
     n=len(inimesed)
@@ -96,8 +103,7 @@ def sorteerimine(palk,inimesed): # Упорядочить зарплаты в п
                 inimesed[j]=abi_i
     return palk,inimesed
 
-
-def nimi(palk,inimesed): # Сделать поиск зарплаты по имени человека,
+def nimi(palk,inimesed):
     ots_nimi=[]
     ots_palk=[]
     palk_keda=0
@@ -111,7 +117,11 @@ def nimi(palk,inimesed): # Сделать поиск зарплаты по им�
         else:pass
     return ots_nimi,ots_palk
 
-def maksimum(palk,inimesed): # Самую большую зарплату и кто ее получает,
+def maksimum(palk,inimesed):
+
+    m_palgad=[]
+    nimed=[]
+
     max_palk=palk[0]
     kellel=inimesed[0]
     for p in palk:
@@ -119,24 +129,57 @@ def maksimum(palk,inimesed): # Самую большую зарплату и к�
             max_palk=p
             i=palk.index(max_palk)
             kellel=inimesed[i]
-    return max_palk, kellel   
 
-def minimum(palk,inimesed): # если несколько получают одинаковую мин. зп?
+    n=palk.count(max_palk)
+    palk_copy=palk.copy()
+    inimesed_copy=inimesed.copy()  # копирует список, делает копию
+    for i in range(n):
+        j=palk_copy.index(max_palk)
+        m_palgad.append(palk_copy.pop(j))
+        nimed.append(inimesed_copy.pop(j))
+    return m_palgad, kellel   # cамая большая зарплата и кто ее получает
+
+def minimum(palk,inimesed):      #Если несколько человек с минимальной зарплатой, так что лучше добавить список
+    m_palgad=[]
+    nimed=[]
     min_palk=palk[0]
     kellel=inimesed[0]
-    for p in palk:
-        if p<min_palk:
-            min_palk=p
-            i=palk.index(min_palk)
+    for p in palk:       # перебираем всю запрлату
+        if p<min_palk:        
+            min_palk=p          # если нашли что-то меньше, чем минимальная зарплата, мы ее приравниваем к минимуму 
+            i=palk.index(min_palk)  # через метод индекс, узнаем на каком месте находится мин.зарплата
             kellel=inimesed[i]
-    return min_palk, kellel    # возвращает два значения (Минимальная зарплата)
+    n=palk.count(min_palk)
+    palk_copy=palk.copy()
+    inimesed_copy=inimesed.copy()  # копирует список, делает копию
+    for i in range(n):
+        j=palk_copy.index(min_palk)
+        m_palgad.append(palk_copy.pop(j))
+        nimed.append(inimesed_copy.pop(j))
+    return m_palgad, nimed  # вернула значение и сказала у кого оно  / кто получает самую маленькую зарплату и какую именно
     
-def keskmine(palk): # Вычисляем среднюю ЗП
-    summa=sum(palk)
-    n=len(palk)
-    
-    summa/=n
-    return summa # находим среднее значение зарплаты
-while True:
+def keskmine(p):
+    n=len(p)
+    summa = sum(p)
+    k=summa/n
+    return k
+def Kustutamine():
+    kesk = keskmine(palk)
+    print(kesk)
+    for i in palk:
+        if i < kesk:
+            index = palk.index(i)
+            palk.pop(index)
+            inimesed.pop(index)
+            print("Removed")
+
+def sort_nimi_jargi():
+    return SortAndSyncList_Multi(inimesed,palk)
+def SortAndSyncList_Multi(ListToSort, *ListsToSync):
+    y = sorted(zip(ListToSort, zip(*ListsToSync)))
+    w = [n for n in zip(*y)]
+    return list(w[0]), tuple(list(a) for a in zip(*w[1]))
+palk=[1200,2500,750,395,395,395,395,1200]
+inimesed=["A","B","A","A","J","D","D","E"]
+while True:                             # бесконечный цикл, запускает фунцию
     palgad(palk,inimesed)
-    
